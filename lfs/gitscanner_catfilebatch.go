@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/git-lfs/git-lfs/git"
+	"github.com/rubyist/tracerx"
 )
 
 // runCatFileBatch uses 'git cat-file --batch' to get the object contents of a
@@ -129,17 +130,24 @@ func (s *PointerScanner) next(blob string) (string, string, *WrappedPointer, err
 
 	sha := sha256.New()
 
+	msg := "shasum"
+
 	var buf *bytes.Buffer
 	var to io.Writer = sha
 	if size <= blobSizeCutoff {
+		msg = msg + ", and buffer"
 		buf = bytes.NewBuffer(make([]byte, 0, size))
 		to = io.MultiWriter(to, buf)
 	}
+
+	tracerx.Printf("About to read %d bytes to %s", int64(size), msg)
 
 	read, err := io.CopyN(to, s.scanner.Contents(), int64(size))
 	if err != nil {
 		return blobSha, "", nil, err
 	}
+
+	tracerx.Printf("Read %d bytes to %s", int64(size), msg)
 
 	if int64(size) != read {
 		return blobSha, "", nil, fmt.Errorf("expected %d bytes, read %d bytes", size, read)
