@@ -98,11 +98,12 @@ func (i *gitIndexer) Add(path string) error {
 
 	if i.cmd == nil {
 		// Fire up the update-index command
-		stdin, err := git.StartUpdateIndexFromStdin(&i.output)
+		cmd, stdin, err := git.StartUpdateIndexFromStdin(&i.output)
 		if err != nil {
 			return err
 		}
 
+		i.cmd = cmd
 		i.input = stdin
 	}
 

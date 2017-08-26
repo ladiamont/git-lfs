@@ -458,7 +458,7 @@ func DefaultRemote() (string, error) {
 	return "", errors.New("Unable to pick default remote, too ambiguous")
 }
 
-func StartUpdateIndexFromStdin(w io.Writer) (io.WriteCloser, error) {
+func StartUpdateIndexFromStdin(w io.Writer) (*subprocess.Cmd, io.WriteCloser, error) {
 	cmd := gitNoLFS("update-index", "-q", "--refresh", "--stdin")
 	cmd.Stdout = w
 	cmd.Stderr = w
@@ -467,7 +467,7 @@ func StartUpdateIndexFromStdin(w io.Writer) (io.WriteCloser, error) {
 		err = cmd.Start()
 	}
 
-	return stdin, err
+	return cmd, stdin, err
 }
 
 type gitConfig struct {
