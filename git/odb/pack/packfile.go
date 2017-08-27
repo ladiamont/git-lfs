@@ -20,7 +20,7 @@ func (p *Packfile) Object(name []byte) (*Object, error) {
 		return nil, err
 	}
 
-	r, _, err := p.unpackObject(int64(entry.PackOffset))
+	r, err := p.unpackObject(int64(entry.PackOffset))
 	if err != nil {
 		return nil, err
 	}
@@ -31,10 +31,10 @@ func (p *Packfile) Object(name []byte) (*Object, error) {
 	}, nil
 }
 
-func (p *Packfile) unpackObject(offset int64) (Chain, PackedObjectType, error) {
+func (p *Packfile) unpackObject(offset int64) (Chain, error) {
 	buf := make([]byte, 1)
 	if _, err := p.r.ReadAt(buf, offset); err != nil {
-		return nil, 0, err
+		return nil, err
 	}
 
 	objectOffset := offset
@@ -46,7 +46,7 @@ func (p *Packfile) unpackObject(offset int64) (Chain, PackedObjectType, error) {
 
 	for buf[0]&0x80 != 0 {
 		if _, err := p.r.ReadAt(buf, offset); err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 
 		size |= (uint64(buf[0]&0x7f) << shift)
@@ -58,7 +58,7 @@ func (p *Packfile) unpackObject(offset int64) (Chain, PackedObjectType, error) {
 	case TypeObjectOffsetDelta, TypeObjectReferenceDelta:
 		base, offset, err := p.findBase(typ, offset, objectOffset)
 		if err != nil {
-			return nil, typ, err
+			return nil, err
 		}
 
 		return &ChainDelta{
@@ -69,7 +69,7 @@ func (p *Packfile) unpackObject(offset int64) (Chain, PackedObjectType, error) {
 
 				r: p.r,
 			},
-		}, typ, nil
+		}, nil
 	case TypeCommit, TypeTree, TypeBlob, TypeTag:
 		return &ChainBase{
 			offset: offset,
@@ -77,9 +77,9 @@ func (p *Packfile) unpackObject(offset int64) (Chain, PackedObjectType, error) {
 			typ:    typ,
 
 			r: p.r,
-		}, typ, nil
+		}, nil
 	}
-	return nil, typ, errUnrecognizedObjectType
+	return nil, errUnrecognizedObjectType
 }
 
 func (p *Packfile) findBase(typ PackedObjectType, offset, objOffset int64) (Chain, int64, error) {
@@ -119,6 +119,6 @@ func (p *Packfile) findBase(typ PackedObjectType, offset, objOffset int64) (Chai
 		return nil, baseOffset, errors.Errorf("git/odb/pack: type %s is not deltafied", typ)
 	}
 
-	r, _, err := p.unpackObject(baseOffset)
+	r, err := p.unpackObject(baseOffset)
 	return r, offset, err
 }
