@@ -2,9 +2,7 @@ package pack
 
 import (
 	"compress/zlib"
-	"fmt"
 	"io"
-	"runtime"
 )
 
 type ChainBase struct {
@@ -22,12 +20,6 @@ func (b *ChainBase) Data() ([]byte, error) {
 	})
 
 	if err != nil {
-		for i := 0; i < 8; i++ {
-			_, f, l, ok := runtime.Caller(i)
-			if ok {
-				fmt.Printf("%s:%d\n", f, l)
-			}
-		}
 		return nil, err
 	}
 
