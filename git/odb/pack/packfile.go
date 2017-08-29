@@ -24,7 +24,7 @@ func (p *Packfile) Close() error {
 func (p *Packfile) Object(name []byte) (*Object, error) {
 	entry, err := p.idx.Entry(name)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "git/odb/pack: missing index entry")
 	}
 
 	r, err := p.unpackObject(int64(entry.PackOffset))
