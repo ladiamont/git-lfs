@@ -9,13 +9,13 @@ import (
 type Packfile struct {
 	Version uint32
 	Objects uint32
-	Idx     *Index
+	idx     *Index
 
 	r io.ReaderAt
 }
 
 func (p *Packfile) Object(name []byte) (*Object, error) {
-	entry, err := p.Idx.Entry(name)
+	entry, err := p.idx.Entry(name)
 	if err != nil {
 		return nil, err
 	}
