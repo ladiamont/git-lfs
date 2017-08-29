@@ -14,6 +14,13 @@ type Packfile struct {
 	r io.ReaderAt
 }
 
+func (p *Packfile) Close() error {
+	if close, ok := p.r.(io.Closer); ok {
+		return close.Close()
+	}
+	return nil
+}
+
 func (p *Packfile) Object(name []byte) (*Object, error) {
 	entry, err := p.idx.Entry(name)
 	if err != nil {
