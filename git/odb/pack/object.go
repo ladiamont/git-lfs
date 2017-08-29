@@ -5,8 +5,8 @@ type Object struct {
 	data Chain
 }
 
-func (o *Object) Data() ([]byte, error) {
-	return o.data.Data()
+func (o *Object) Unpack() ([]byte, error) {
+	return o.data.Unpack()
 }
 
 func (o *Object) Type() PackedObjectType { return o.typ }

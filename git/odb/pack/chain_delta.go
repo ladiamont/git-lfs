@@ -6,13 +6,13 @@ type ChainDelta struct {
 	base, delta Chain
 }
 
-func (d *ChainDelta) Data() ([]byte, error) {
-	base, err := d.base.Data()
+func (d *ChainDelta) Unpack() ([]byte, error) {
+	base, err := d.base.Unpack()
 	if err != nil {
 		return nil, err
 	}
 
-	delta, err := d.delta.Data()
+	delta, err := d.delta.Unpack()
 	if err != nil {
 		return nil, err
 	}

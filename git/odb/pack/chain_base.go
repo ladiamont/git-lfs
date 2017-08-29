@@ -13,7 +13,7 @@ type ChainBase struct {
 	r io.ReaderAt
 }
 
-func (b *ChainBase) Data() ([]byte, error) {
+func (b *ChainBase) Unpack() ([]byte, error) {
 	zr, err := zlib.NewReader(&OffsetReaderAt{
 		r: b.r,
 		o: b.offset,

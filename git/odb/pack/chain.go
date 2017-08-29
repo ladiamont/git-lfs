@@ -1,6 +1,6 @@
 package pack
 
 type Chain interface {
-	Data() ([]byte, error)
+	Unpack() ([]byte, error)
 	Type() PackedObjectType
 }
