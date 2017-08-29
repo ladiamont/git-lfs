@@ -105,9 +105,13 @@ func (s *Set) Object(name []byte) (*Object, error) {
 
 	for _, pack := range s.m[key] {
 		o, err := pack.Object(name)
-		if o != nil || err != nil {
-			return o, err
+		if err != nil {
+			if IsNotFound(err) {
+				continue
+			}
+			return nil, err
 		}
+		return o, nil
 	}
 	return nil, nil
 }
