@@ -115,7 +115,7 @@ func (p *Packfile) findBase(typ PackedObjectType, offset, objOffset int64) (Chai
 		baseOffset = objOffset - baseOffset
 		offset += int64(i) + 1
 	case TypeObjectReferenceDelta:
-		e, err := p.Idx.Entry(sha[:])
+		e, err := p.idx.Entry(sha[:])
 		if err != nil {
 			return nil, baseOffset, err
 		}
