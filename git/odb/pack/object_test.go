@@ -45,14 +45,3 @@ func TestObjectUnpackPropogatesErrors(t *testing.T) {
 	assert.Nil(t, data)
 	assert.Equal(t, expected, err)
 }
-
-type ChainSimple struct {
-	X   []byte
-	Err error
-}
-
-func (c *ChainSimple) Unpack() ([]byte, error) {
-	return c.X, c.Err
-}
-
-func (c *ChainSimple) Type() PackedObjectType { return TypeNone }
