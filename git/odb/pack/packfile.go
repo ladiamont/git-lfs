@@ -71,14 +71,14 @@ func (p *Packfile) unpackObject(offset int64) (Chain, error) {
 			return nil, err
 		}
 
-		return &ChainDelta{
-			base: base,
-			delta: &ChainBase{
-				offset: offset,
-				size:   int64(size),
+		delta := make([]byte, size)
+		if _, err := p.r.ReadAt(delta, offset); err != nil {
+			return nil, err
+		}
 
-				r: p.r,
-			},
+		return &ChainDelta{
+			base:  base,
+			delta: delta,
 		}, nil
 	case TypeCommit, TypeTree, TypeBlob, TypeTag:
 		return &ChainBase{

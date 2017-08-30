@@ -3,7 +3,8 @@ package pack
 import "github.com/git-lfs/git-lfs/errors"
 
 type ChainDelta struct {
-	base, delta Chain
+	base  Chain
+	delta []byte
 }
 
 func (d *ChainDelta) Unpack() ([]byte, error) {
@@ -12,12 +13,7 @@ func (d *ChainDelta) Unpack() ([]byte, error) {
 		return nil, err
 	}
 
-	delta, err := d.delta.Unpack()
-	if err != nil {
-		return nil, err
-	}
-
-	return patch(base, delta)
+	return patch(base, d.delta)
 }
 
 func (d *ChainDelta) Type() PackedObjectType {
