@@ -32,7 +32,7 @@ type ObjectDatabase struct {
 //
 //  /absolute/repo/path/.git/objects
 func FromFilesystem(root string) (*ObjectDatabase, error) {
-	packs, err := pack.NewSetRoot(root)
+	packs, err := pack.NewSet(root)
 	if err != nil {
 		return nil, err
 	}
